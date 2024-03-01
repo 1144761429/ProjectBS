@@ -25,7 +25,7 @@ public class AimFan : MonoBehaviour
 
     void DrawSpreadIndicator()
     {
-        Vector3[] points = new Vector3[rayCount + 1];
+        Vector3[] points = new Vector3[2*rayCount + 2];
         points[0] = player.position; // The first point is the origin
 
         float stepAngle = spreadAngle / (float)(rayCount - 1);
@@ -36,16 +36,18 @@ public class AimFan : MonoBehaviour
             Vector3 direction = rotation * player.forward;
             RaycastHit hit;
 
+            points[2 * i] = player.position;
             if (Physics.Raycast(player.position, direction, out hit, maxRange, hitLayers))
             {
                 // Ray hit something
-                points[i + 1] = hit.point;
+                points[2*i + 1] = hit.point;
             }
             else
             {
                 // Ray did not hit anything within max range
-                points[i + 1] = player.position + direction * maxRange;
+                points[2*i + 1] = player.position + direction * maxRange;
             }
+
         }
 
         // Set the positions on the LineRenderer
