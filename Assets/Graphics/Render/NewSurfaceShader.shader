@@ -2,8 +2,9 @@ Shader "Custom/NewSurfaceShader"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        _MaskTex ("Mask", 2D) = "white" {}
+        _MainTex ("Albedo (RGB)", 2D) = "white" {}
+        _MaskTex ("Mask (RGB)", 2D) = "white" {}
+        _Darkness ("Darkness", Range(0,1)) = 0.5
     }
     SubShader
     {
@@ -34,6 +35,7 @@ Shader "Custom/NewSurfaceShader"
             sampler2D _MaskTex;
             float4 _MainTex_ST;
             float4 _MaskTex_ST;
+            float _Darkness;
 
             v2f vert (appdata v)
             {
@@ -45,16 +47,13 @@ Shader "Custom/NewSurfaceShader"
             
             fixed4 frag (v2f i) : SV_Target
             {
-                // Sample the texture and mask
                 fixed4 col = tex2D(_MainTex, i.uv);
                 fixed4 mask = tex2D(_MaskTex, i.uv);
-                
-                // Apply the mask
-                col *= mask;
-
+                col.rgb *= lerp(1.0, _Darkness, mask.r); // Assuming mask is grayscale
                 return col;
             }
             ENDCG
         }
     }
+    FallBack "Diffuse"
 }
