@@ -1,27 +1,58 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class PlayerShooting : MonoBehaviour
 {
     public GameObject bulletPrefab;
+    private ObjectPool<GameObject> BulletPool;
+
     public Transform bulletSpawnPoint; // It's just the player, for now
-    public float bulletSpeed = 0.000001f;
+    public float bulletSpeed = 100f;
     public float gunRadius = 1f;
 
     // Isomorphism aiming
     public LayerMask raycastLayers; // the enemies or the ground for mousing target
-    public float groundOffset = 0.4f; // the height between ground and the player
-    public float screenIsoOffset = 25f; // the screen distance from the mousing ground to the isomorphic point
 
     // bullet spreading
-    float spreadAngle = 1f; // initialize
-    float minSpreadAngle = 1f;
-    float maxSpreadAngle = 12f;
-    float spreadIncreasePerShot = 2f; // after every fire
-    float spreadRecoveryRate = 10f; // per second
+    public float spreadAngle = 1f; // initialize
+    public float minSpreadAngle = 1f;
+    public float maxSpreadAngle = 12f;
+    public float spreadIncreasePerShot = 2f; // after every fire
+    public float spreadRecoveryRate = 10f; // per second
 
-    void Update()
+    private void Awake()
+    {
+        BulletPool = new ObjectPool<GameObject>(OnCreateBullet, OnGetBullet, OnReleaseBullet, OnDestroyBullet, false, 16, 100);
+    }
+
+    private GameObject OnCreateBullet()
+    {
+        GameObject bullet = Instantiate(bulletPrefab);
+        bullet.SetActive(false);
+        return bullet;
+    }
+
+    private void OnGetBullet(GameObject bullet)
+    {
+    }
+
+    private void OnReleaseBullet(GameObject bullet)
+    {
+        bullet.SetActive(false);
+    }
+    private void OnDestroyBullet(GameObject bullet)
+    {
+        Destroy(bullet);
+    }
+
+    private void Start()
+    {
+
+    }
+
+    private void Update()
     {
         // Fire1: left mouse buttom or Ctrl, by default
         // TODO: remove Ctrl and assign it to stealth
@@ -31,13 +62,12 @@ public class PlayerShooting : MonoBehaviour
         }
 
         // get iso-mousing target
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition + Vector3.down * screenIsoOffset);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         Vector3 targetPoint;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, raycastLayers))
+        if (Physics.Raycast(ray, out hit, 100, raycastLayers))
         {
             targetPoint = hit.point;
-            //targetPoint.y += groundOffset; // change ground target to iso-aiming direction
 
             Vector3 direction = targetPoint - bulletSpawnPoint.position;
             direction.y = bulletSpawnPoint.forward.y;
@@ -64,10 +94,12 @@ public class PlayerShooting : MonoBehaviour
         Vector3 finalDirection = Quaternion.LookRotation(bulletSpawnPoint.forward.normalized) * randomDirection;
 
 
-        
 
         // create the bullet instance
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position + finalDirection * gunRadius, Quaternion.identity);
+        GameObject bullet = BulletPool.Get();
+        bullet.transform.position = bulletSpawnPoint.position + finalDirection * gunRadius;
+        bullet.SetActive(true);
+        bullet.GetComponent<Rigidbody>().isKinematic = false;
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
 
         rb.velocity = finalDirection * bulletSpeed;
@@ -79,9 +111,15 @@ public class PlayerShooting : MonoBehaviour
             spreadAngle = Mathf.Min(maxSpreadAngle, spreadAngle);
         }
 
-        // Destroy-timeout when not colliding
-        Destroy(bullet, 5f);
+        // timeout-destroy
+        StartCoroutine(DestroyBullet(bullet));
 
+    }
 
+    // destroy after 1s
+    private IEnumerator DestroyBullet(GameObject bullet)
+    {
+        yield return new WaitForSeconds(1);
+        BulletPool.Release(bullet);
     }
 }

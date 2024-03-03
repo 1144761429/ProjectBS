@@ -24,15 +24,8 @@ public class bullet : MonoBehaviour
         {
             rb.isKinematic = true; // 设置为Kinematic以停止物理影响
         }
-
-        StartCoroutine(DestroyAfterDelay(0.1f)); // 延迟0.1秒销毁，根据需要可以改变时间
     }
 
-    IEnumerator DestroyAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        Destroy(gameObject);
-    }
 
     void OnCollisionExit(Collision other)
     {
