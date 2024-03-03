@@ -5,7 +5,13 @@ using UnityEngine.Pool;
 
 public class PlayerShooting : MonoBehaviour
 {
+
+    public GameObject model;
+    private Animator animator;
+
+    public GameObject lightPrefab;
     public GameObject bulletPrefab;
+    private new GameObject light;
     private ObjectPool<GameObject> BulletPool;
 
     public Transform bulletSpawnPoint; // It's just the player, for now
@@ -25,8 +31,9 @@ public class PlayerShooting : MonoBehaviour
     private void Awake()
     {
         BulletPool = new ObjectPool<GameObject>(OnCreateBullet, OnGetBullet, OnReleaseBullet, OnDestroyBullet, false, 16, 100);
+        light = Instantiate(lightPrefab);
+        light.SetActive(false);
     }
-
     private GameObject OnCreateBullet()
     {
         GameObject bullet = Instantiate(bulletPrefab);
@@ -49,7 +56,7 @@ public class PlayerShooting : MonoBehaviour
 
     private void Start()
     {
-
+        animator = model.GetComponent<Animator>();
     }
 
     private void Update()
@@ -58,34 +65,36 @@ public class PlayerShooting : MonoBehaviour
         // TODO: remove Ctrl and assign it to stealth
         if (Input.GetButtonDown("Fire1"))
         {
+            // get iso-mousing target
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Vector3 targetPoint;
+            if (Physics.Raycast(ray, out hit, 100, raycastLayers))
+            {
+                targetPoint = hit.point;
+
+                Vector3 direction = targetPoint - bulletSpawnPoint.position;
+                direction.y = bulletSpawnPoint.forward.y;
+                bulletSpawnPoint.forward = direction;
+            }
+
             FireBullet();
-        }
-
-        // get iso-mousing target
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        Vector3 targetPoint;
-        if (Physics.Raycast(ray, out hit, 100, raycastLayers))
-        {
-            targetPoint = hit.point;
-
-            Vector3 direction = targetPoint - bulletSpawnPoint.position;
-            direction.y = bulletSpawnPoint.forward.y;
-            bulletSpawnPoint.forward = direction;
         }
     }
 
     void FixedUpdate()
     {
         // spread control
-        if (spreadAngle > 0)
+        if (spreadAngle > minSpreadAngle)
         {
             spreadAngle -= spreadRecoveryRate * Time.fixedDeltaTime;
             spreadAngle = Mathf.Max(minSpreadAngle, spreadAngle);
         }
+        else animator.SetBool("Firing", false);
     }
     void FireBullet()
     {
+        animator.SetBool("Firing", true);
         // Random spread inside a unit cone
         Vector3 randomDirection = Random.insideUnitCircle * Mathf.Tan(spreadAngle * Mathf.Deg2Rad);
         randomDirection.z = 1f;
@@ -97,7 +106,9 @@ public class PlayerShooting : MonoBehaviour
 
         // create the bullet instance
         GameObject bullet = BulletPool.Get();
-        bullet.transform.position = bulletSpawnPoint.position + finalDirection * gunRadius;
+        light.transform.position = bulletSpawnPoint.position + finalDirection * gunRadius;
+        light.SetActive(true);
+        bullet.transform.position = light.transform.position;
         bullet.SetActive(true);
         bullet.GetComponent<Rigidbody>().isKinematic = false;
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
@@ -113,6 +124,7 @@ public class PlayerShooting : MonoBehaviour
 
         // timeout-destroy
         StartCoroutine(DestroyBullet(bullet));
+        StartCoroutine(DisableLight(light));
 
     }
 
@@ -121,5 +133,10 @@ public class PlayerShooting : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         BulletPool.Release(bullet);
+    }
+    private IEnumerator DisableLight(GameObject light)
+    {
+        yield return new WaitForSeconds(0.1f);
+        light.SetActive(false);
     }
 }

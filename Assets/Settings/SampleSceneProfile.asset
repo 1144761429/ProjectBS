@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   skipIterations:
     m_OverrideState: 0
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 1.2
+    m_Value: 1.27
   intensity:
     m_OverrideState: 1
-    m_Value: 8.34
+    m_Value: 5.32
   scatter:
     m_OverrideState: 1
-    m_Value: 0.855
+    m_Value: 0.411
   clamp:
     m_OverrideState: 0
     m_Value: 65472
@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 221518ef91623a7438a71fef23660601, type: 3}
   m_Name: WhiteBalance
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   temperature:
     m_OverrideState: 1
     m_Value: 1
@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
   m_Name: Tonemapping
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   mode:
     m_OverrideState: 1
     m_Value: 1
@@ -170,11 +170,11 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 2
   gaussianStart:
-    m_OverrideState: 0
-    m_Value: 10
+    m_OverrideState: 1
+    m_Value: 47.7
   gaussianEnd:
     m_OverrideState: 0
-    m_Value: 30
+    m_Value: 76.6
   gaussianMaxRadius:
     m_OverrideState: 0
     m_Value: 1
@@ -183,13 +183,13 @@ MonoBehaviour:
     m_Value: 0
   focusDistance:
     m_OverrideState: 1
-    m_Value: 5.01
+    m_Value: 6.29
   aperture:
-    m_OverrideState: 0
-    m_Value: 4
+    m_OverrideState: 1
+    m_Value: 5.4
   focalLength:
     m_OverrideState: 1
-    m_Value: 87
+    m_Value: 92
   bladeCount:
     m_OverrideState: 0
     m_Value: 3
