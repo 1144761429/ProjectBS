@@ -1,23 +1,20 @@
-Shader "Custom/FOVPostProcessShader"
+Shader "Custom/WhiteForever"
 {
     Properties
     {
-        _MainTex("Base (RGB)", 2D) = "white" { }
-        _MaskTex("Mask (RGB)", 2D) = "white" { }
+
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
-        LOD 100
+        // No culling or depth
+        Cull Off ZWrite Off ZTest Always
 
         Pass
         {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-
-            #include "UnityCG.cginc"
-
+            
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -30,9 +27,6 @@ Shader "Custom/FOVPostProcessShader"
                 float4 vertex : SV_POSITION;
             };
 
-            sampler2D _MainTex;
-            sampler2D _MaskTex;
-
             v2f vert (appdata v)
             {
                 v2f o;
@@ -43,10 +37,7 @@ Shader "Custom/FOVPostProcessShader"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
-                fixed4 mask = tex2D(_MaskTex, i.uv);
-                col *= mask; // Simple multiplication to apply the mask effect.
-                return col;
+                return fixed4(255,255,255,255); // Prue White
             }
             ENDCG
         }

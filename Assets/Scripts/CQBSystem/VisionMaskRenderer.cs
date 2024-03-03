@@ -1,60 +1,43 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VisionMaskGenerator : MonoBehaviour
+[ExecuteInEditMode]
+public class FOVPostProcess : MonoBehaviour
 {
-    public Material visionMaterial; // The material that will use the mask texture.
-    public int textureSize = 512; // The size of the mask texture.
+    public Shader postProcessShader;
+    private Material postProcessMaterial;
+    public RenderTexture maskTexture; // Assign the mask Render Texture here in the inspector.
 
-    private Texture2D visionTexture;
-
-    private void Start()
+    void Start()
     {
-        GenerateVisionTexture();
+        if (postProcessShader != null)
+        {
+            postProcessMaterial = new Material(postProcessShader);
+            Console.WriteLine("MatisReady");
+        }
     }
 
-    void GenerateVisionTexture()
+    void OnRenderImage(RenderTexture src, RenderTexture dest)
     {
-        visionTexture = new Texture2D(textureSize, textureSize, TextureFormat.ARGB32, false);
-
-        // Set the entire texture to transparent.
-        Color[] colors = visionTexture.GetPixels();
-        for (int i = 0; i < colors.Length; i++)
+        if (postProcessMaterial != null)
         {
-            colors[i] = Color.clear; // Set all pixels to transparent.
+            // Assign the textures to the material
+            postProcessMaterial.SetTexture("_MainTex", src);
+            postProcessMaterial.SetTexture("_MaskTex", maskTexture);
+
+            Console.WriteLine("MrMaintexisMasked");
+
+            // Apply the shader operation
+            Graphics.Blit(src, dest, postProcessMaterial);
         }
-        visionTexture.SetPixels(colors);
-        visionTexture.Apply();
-
-        // Assign the texture to the material.
-        visionMaterial.SetTexture("_VisionTex", visionTexture);
-    }
-
-    public void UpdateVisionArea(Vector2 center, float radius)
-    {
-        // Reset the texture to transparent.
-        Color[] colors = visionTexture.GetPixels();
-        for (int i = 0; i < colors.Length; i++)
+        else
         {
-            colors[i] = Color.clear;
-        }
 
-        // Draw a filled circle at 'center' with 'radius' in pixels.
-        for (int y = 0; y < textureSize; y++)
-        {
-            for (int x = 0; x < textureSize; x++)
-            {
-                float dx = center.x - x;
-                float dy = center.y - y;
-                if (dx * dx + dy * dy <= radius * radius)
-                {
-                    colors[x + y * textureSize] = Color.white; // Vision area.
-                }
-            }
+            Console.WriteLine("MrMaintexisNOTMasked");
+            // Fallback, just copy the source render texture to the destination
+            Graphics.Blit(src, dest);
         }
-
-        visionTexture.SetPixels(colors);
-        visionTexture.Apply();
     }
 }
