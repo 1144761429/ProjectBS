@@ -20,45 +20,27 @@ namespace DefaultNamespace.Player
         private void Awake()
         {
             _speedHandler = new SpeedHandler<EPlayerSpeedElement>();
-
-            InitializeSpeedHandler();
-            
             _rb = GetComponent<Rigidbody>();
-
             _inputHandler = GetComponent<PlayerInputHandler>();
-            //_inputHandler.
-        }
-
-        private void Update()
-        {
-            // if (PlayerInputHandler.MoveDirection != Vector2.zero)
-            // {
-            //     _speedHandler.AdditiveBonus.IncreaseStack(EPlayerSpeedElement.WalkSpeed, 1);
-            // }
-            // else
-            // {
-            //     
-            // }
             
-            //Move();
+            InitializeSpeedHandler();
+            RegisterInputEvents();
         }
-
+        
         private void FixedUpdate()
         {
-            _rb.AddForce(Move(), ForceMode.VelocityChange);
+            Move();
         }
 
         // TODO: add comment
-        private Vector3 Move()
+        private void Move()
         {
-            float xInput = Input.GetAxis("Horizontal");
-            float zInput = Input.GetAxis("Vertical");
+            float xInput = Input.GetAxisRaw("Horizontal");
+            float zInput = Input.GetAxisRaw("Vertical");
             
-            Vector3 moveDirection = new Vector3(xInput, 0f, zInput).normalized;
-            Debug.Log(moveDirection);
-            //_rb.velocity = moveDirection * 10;// * _speedHandler.GetSpeed();
-
-            return moveDirection;
+            Vector3 velocity = new Vector3(xInput, 0f, zInput).normalized * _speedHandler.GetSpeed();
+            Debug.Log(velocity);
+            _rb.AddForce(velocity * Time.fixedDeltaTime, ForceMode.VelocityChange);
         }
         
         // TODO: add comment
@@ -69,6 +51,31 @@ namespace DefaultNamespace.Player
             
             _speedHandler.AdditiveBonus.Add(EPlayerSpeedElement.WalkSpeed, walkElement);
             _speedHandler.AdditiveBonus.Add(EPlayerSpeedElement.RunSpeed, runElement);
+        }
+
+        // TODO: add comment
+        private void RegisterInputEvents()
+        {
+            _inputHandler.WalkAction.started += context =>
+            {
+                _speedHandler.AdditiveBonus.IncreaseStack(EPlayerSpeedElement.WalkSpeed, 1);
+                Debug.Log("adsadasd");
+            };
+            
+            _inputHandler.WalkAction.canceled += context =>
+            {
+                _speedHandler.AdditiveBonus.DecreaseStack(EPlayerSpeedElement.WalkSpeed, 1);
+            };
+            
+            _inputHandler.RunAction.started += context =>
+            {
+                _speedHandler.AdditiveBonus.IncreaseStack(EPlayerSpeedElement.RunSpeed, 1);
+            };
+            
+            _inputHandler.RunAction.canceled += context =>
+            {
+                _speedHandler.AdditiveBonus.DecreaseStack(EPlayerSpeedElement.RunSpeed, 1);
+            };
         }
     }
 }

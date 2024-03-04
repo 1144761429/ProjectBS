@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace DefaultNamespace.Player
 {
@@ -10,8 +11,8 @@ namespace DefaultNamespace.Player
 
         #region Movement
 
-        private InputAction _walkAction;
-        private InputAction _runAction;
+        public InputAction WalkAction { get; private set; }
+        public InputAction RunAction { get; private set; }
 
         public static Vector2 MoveDirection { get; private set; }
         public static bool IsHoldingRunButton { get; private set; }
@@ -22,14 +23,14 @@ namespace DefaultNamespace.Player
         {
             _playerInput = GetComponent<PlayerInput>();
 
-            _walkAction = _playerInput.actions["Walk"];
-            _runAction = _playerInput.actions["Run"];
+            WalkAction = _playerInput.actions["Walk"];
+            RunAction = _playerInput.actions["Run"];
         }
 
         private void Update()
         {
-            MoveDirection = _walkAction.ReadValue<Vector2>();
-            IsHoldingRunButton = _runAction.ReadValue<bool>();
+            MoveDirection = WalkAction.ReadValue<Vector2>();
+            IsHoldingRunButton = RunAction.ReadValue<bool>();
         }
     }
 }
