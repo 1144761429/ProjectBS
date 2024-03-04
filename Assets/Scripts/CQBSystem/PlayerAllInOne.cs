@@ -1,9 +1,6 @@
 using UnityEngine;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 using UnityEngine.Pool;
 using System.Collections;
-using System.Collections.Generic;
-
 
 public class PlayerAllInOne : MonoBehaviour
 {
