@@ -19,7 +19,7 @@ public class AimFanScripts : MonoBehaviour
     private GameObject SpreadFan;
     private GameObject AimLine;
 
-    public PlayerShooting playerShooting; // used to get the spread
+    public PlayerAllInOne playerAllInOne; // used to get the spread
 
     private void Start()
     {
@@ -39,7 +39,7 @@ public class AimFanScripts : MonoBehaviour
 
     private void CreateFanMesh()
     {
-        float spreadAngle = playerShooting.spreadAngle;
+        float spreadAngle = playerAllInOne.spreadAngle;
         float spreadRayCount = spreadAngle * rayPerDegree;
         int spreadRayStart = (int)((rayCount - spreadRayCount) / 2);
 
