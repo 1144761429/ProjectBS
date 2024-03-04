@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace Utilities.StackableElement
+namespace Utilities.StackableElement.Core
 {
     /// <summary>
     /// An object that stores information of overflow of an increment or decrement on an <see cref="IStackable"/>.

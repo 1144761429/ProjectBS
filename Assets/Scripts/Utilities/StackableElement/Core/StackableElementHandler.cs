@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Utilities.StackableElement
+namespace Utilities.StackableElement.Core
 {
     /// <summary>
     /// A class that handles and organizes a group of <see cref="IStackable"/> object.
@@ -11,10 +11,12 @@ namespace Utilities.StackableElement
     ///
     /// <typeparam name="TID">The type of the ID/name of the <see cref="IStackable"/> in this <see cref="StackableElementHandler{TIDEnum,TStackable}"/></typeparam>
     /// <typeparam name="TStackable">The type of <see cref="IStackable"/> that this handler handles.</typeparam>
-    public abstract class StackableElementHandler<TID, TStackable> : IEnumerable<TStackable>
+    public class StackableElementHandler<TID, TStackable> : IEnumerable<TStackable>
         where TID : Enum
         where TStackable : IStackable
     {
+        #region Fields and Properties
+        
         /// <summary>
         /// The total number of <see cref="TStackable"/> in this handler.
         /// </summary>
@@ -28,12 +30,16 @@ namespace Utilities.StackableElement
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> that maps an ID/name of <see cref="TID"/> to a <see cref="TStackable"/>.
         /// </summary>
-        private Dictionary<TID, TStackable> _dictionary;
+        private readonly Dictionary<TID, TStackable> _dictionary;
 
+        #endregion
+
+        #region Public Methods
+        
         /// <summary>
         /// A constructor that initializes the <see cref="StackableElementHandler{TID,TStackable}"/>.
         /// </summary>
-        protected StackableElementHandler()
+        public StackableElementHandler()
         {
             _dictionary = new Dictionary<TID, TStackable>();
         }
@@ -94,15 +100,13 @@ namespace Utilities.StackableElement
         /// </summary>
         public void DeleteAll()
         {
-            _dictionary = new Dictionary<TID, TStackable>();
+            _dictionary.Clear();
             NonZeroCount = 0;
         }
         
         /// <summary>
         /// Increase the stack number of a <see cref="TStackable"/> with ID <paramref name="id"/> by <paramref name="amount"/>.
         /// </summary>
-        ///
-        /// <remarks>If an overflow happens, the increment will not be performed.</remarks>
         /// 
         /// <param name="id">The ID of the <see cref="TStackable"/> to increase stack.</param>
         /// <param name="amount">The amount of stack that will be increased.</param>
@@ -121,20 +125,11 @@ namespace Utilities.StackableElement
             {
                 throw new KeyNotFoundException($"StackableElement with ID {id} is not found in {this}.");
             }
-
-            int overflowAmount = stackableElement.Stack + amount - stackableElement.MaxStack;
             
-            // If overflow happens.
-            if (overflowAmount > 0)
-            {
-                stackableElement.IncreaseStack(amount - overflowAmount);
-                return new StackableElementOverflowInfo(id.ToString(), amount, ToString(), overflowAmount);
-            }
-
             int stackBeforeIncrease = stackableElement.Stack;
             
-            stackableElement.IncreaseStack(amount);
-
+            stackableElement.IncreaseStack(amount, out int overflowAmount);
+            
             if (stackBeforeIncrease == 0 && stackableElement.Stack != 0)
             {
                 NonZeroCount--;
@@ -144,14 +139,18 @@ namespace Utilities.StackableElement
                 NonZeroCount++;
             }
             
+            // If overflow happens.
+            if (overflowAmount > 0)
+            {
+                return new StackableElementOverflowInfo(id.ToString(), amount, ToString(), overflowAmount);
+            }
+            
             return new StackableElementOverflowInfo(id.ToString(), amount, ToString(), 0);
         }
         
         /// <summary>
         /// Decrease the stack number of a <see cref="TStackable"/> with ID <paramref name="id"/> by <paramref name="amount"/>.
         /// </summary>
-        ///
-        /// <remarks>If an overflow happens, the increment will not be performed.</remarks>
         /// 
         /// <param name="id">The ID of the <see cref="TStackable"/> to increase stack.</param>
         /// <param name="amount">The amount of stack that will be decreased.</param>
@@ -170,19 +169,10 @@ namespace Utilities.StackableElement
             {
                 throw new KeyNotFoundException($"StackableElement with ID {id} is not found in {this}.");
             }
-
-            int overflowAmount = stackableElement.Stack - amount - stackableElement.MaxStack;
-            
-            // If overflow happens.
-            if (overflowAmount < 0)
-            {
-                _dictionary[id].DecreaseStack(amount + overflowAmount);
-                return new StackableElementOverflowInfo(id.ToString(), amount, ToString(), overflowAmount);
-            }
             
             int stackBeforeDecrease = stackableElement.Stack;
             
-            _dictionary[id].DecreaseStack(amount);
+            stackableElement.DecreaseStack(amount, out int overflowAmount);
             
             if (stackBeforeDecrease == 0 && stackableElement.Stack != 0)
             {
@@ -191,6 +181,12 @@ namespace Utilities.StackableElement
             else if (stackBeforeDecrease != 0 && stackableElement.Stack == 0)
             {
                 NonZeroCount++;
+            }
+            
+            // If overflow happens.
+            if (overflowAmount > 0)
+            {
+                return new StackableElementOverflowInfo(id.ToString(), amount, ToString(), overflowAmount);
             }
             
             return new StackableElementOverflowInfo(id.ToString(), amount, ToString(), 0);
@@ -262,6 +258,8 @@ namespace Utilities.StackableElement
                 }
             }
         }
+        
+        #endregion
 
         #region IEnumerator
 

@@ -1,4 +1,4 @@
-﻿namespace Utilities.StackableElement
+﻿namespace Utilities.StackableElement.Core
 {
     /// <summary>
     /// An interface that represents a thing that can have stacks.
@@ -12,6 +12,8 @@
     /// </example>
     public interface IStackable
     {
+        #region Properties
+        
         /// <summary>
         /// The stack number.
         /// </summary>
@@ -34,23 +36,47 @@
         bool IsSwitcher { get; }
         
         /// <summary>
-        /// If the <see cref="Stack"/> of this <see cref="IStackable"/> object is currently Changeable.
+        /// If the <see cref="Stack"/> of this <see cref="IStackable"/> object is currently unchangeable.
         /// </summary>
         bool IsFrozen { get; }
 
+        #endregion
+
+        #region Methods
+        
         /// <summary>
         /// Increase the <see cref="Stack"/> by <see cref="amount"/>.
         /// </summary>
-        void IncreaseStack(int amount);
+        ///
+        /// <example>
+        /// Given the <see cref="MaxStack"/> is -4, but the actual <see cref="Stack"/> after increment is -1.
+        /// Then, the overflow amount should be 3 instead of -3. 
+        /// </example>
+        /// 
+        /// <param name="amount">The amount to increase. This should be non-negative.</param>
+        /// <param name="overflowAmount">The amount that exceeds the maximum amount. This is non-negative.
+        /// If this is 0, then there is no overflow.</param>
+        void IncreaseStack(int amount, out int overflowAmount);
         
         /// <summary>
         /// Decrease the <see cref="Stack"/> by <see cref="amount"/>.
         /// </summary>
-        void DecreaseStack(int amount);
+        ///
+        /// <example>
+        /// Given the <see cref="MinStack"/> is -2, but the actual <see cref="Stack"/> after decrement is -5.
+        /// Then, the overflow amount should be 3 instead of -3. 
+        /// </example>
+        /// 
+        /// <param name="amount">The amount to decrease. This should be non-negative.</param>
+        /// <param name="overflowAmount">The amount that exceeds the minimum amount. This is non-negative.
+        /// If this is 0, then there is no overflow.</param>
+        void DecreaseStack(int amount, out int overflowAmount);
 
         /// <summary>
         /// Reset the stack.
         /// </summary>
         void Reset();
+        
+        #endregion
     }
 }
