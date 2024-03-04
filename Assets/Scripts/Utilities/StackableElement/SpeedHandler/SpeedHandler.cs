@@ -24,13 +24,13 @@ namespace Utilities.StackableElement.SpeedHandler
         /// A <see cref="StackableElementHandler{TID,TStackable}"/> that stores all the <see cref="SpeedElement"/> that
         /// falls into the additive bonus section when calculating the speed.
         /// </summary>
-        private readonly StackableElementHandler<TID, SpeedElement> _additiveBonus;
+        public StackableElementHandler<TID, SpeedElement> AdditiveBonus { get; private set; }
         
         /// <summary>
         /// A <see cref="StackableElementHandler{TID,TStackable}"/> that stores all the <see cref="SpeedElement"/> that
         /// falls into the multiplier section when calculating the speed.
         /// </summary>
-        private readonly StackableElementHandler<TID, SpeedElement> _multiplier;
+        public StackableElementHandler<TID, SpeedElement> Multiplier { get; private set; }
         
         #endregion
 
@@ -41,8 +41,8 @@ namespace Utilities.StackableElement.SpeedHandler
         /// </summary>
         public SpeedHandler()
         {
-            _additiveBonus = new StackableElementHandler<TID, SpeedElement>();
-            _multiplier = new StackableElementHandler<TID, SpeedElement>();
+            AdditiveBonus = new StackableElementHandler<TID, SpeedElement>();
+            Multiplier = new StackableElementHandler<TID, SpeedElement>();
         }
     
         /// <summary>
@@ -60,18 +60,18 @@ namespace Utilities.StackableElement.SpeedHandler
         
         /// <summary>
         /// Get the sum of <see cref="SpeedElement.OverallValue"/> of all the <see cref="SpeedElement"/> in
-        /// the <see cref="_additiveBonus"/> section.
+        /// the <see cref="AdditiveBonus"/> section.
         /// </summary>
         /// 
         /// <returns>
         /// Get the sum of <see cref="SpeedElement.OverallValue"/> of all the <see cref="SpeedElement"/> in
-        /// the <see cref="_additiveBonus"/> section.
+        /// the <see cref="AdditiveBonus"/> section.
         /// </returns>
         private float GetAdditiveBonusSum()
         {
             float sum = 0;
 
-            foreach (SpeedElement speedElement in _additiveBonus)
+            foreach (SpeedElement speedElement in AdditiveBonus)
             {
                 sum += speedElement.OverallValue;
             }
@@ -81,18 +81,18 @@ namespace Utilities.StackableElement.SpeedHandler
         
         /// <summary>
         /// Get the sum of <see cref="SpeedElement.OverallValue"/> of all the <see cref="SpeedElement"/> in
-        /// the <see cref="_multiplier"/> section.
+        /// the <see cref="Multiplier"/> section.
         /// </summary>
         /// 
         /// <returns>
         /// Get the sum of <see cref="SpeedElement.OverallValue"/> of all the <see cref="SpeedElement"/> in
-        /// the <see cref="_multiplier"/> section.
+        /// the <see cref="Multiplier"/> section.
         /// </returns>
         private float GetMultiplierSum()
         {
             float sum = 0;
 
-            foreach (SpeedElement speedElement in _multiplier)
+            foreach (SpeedElement speedElement in Multiplier)
             {
                 sum += speedElement.OverallValue;
             }

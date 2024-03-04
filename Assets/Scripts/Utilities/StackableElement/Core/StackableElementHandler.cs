@@ -55,12 +55,15 @@ namespace Utilities.StackableElement.Core
         /// </exception>
         public void Add(TID id, [NotNull]TStackable stackableElement)
         {
-            if (_dictionary.TryAdd(id, stackableElement) && stackableElement.Stack != 0)
+            if (!_dictionary.TryAdd(id, stackableElement))
+            {
+                throw new ArgumentException($"An {typeof(TStackable)} with ID {id} already exists in this handler.");
+            }
+
+            if (stackableElement.Stack != 0)
             {
                 NonZeroCount++;
             }
-
-            throw new ArgumentException($"An {typeof(TStackable)} with ID {id} already exists in this handler.");
         }
 
         /// <summary>
