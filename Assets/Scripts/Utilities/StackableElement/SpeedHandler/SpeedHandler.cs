@@ -51,7 +51,7 @@ namespace Utilities.StackableElement.SpeedHandler
         /// <returns></returns>
         public float GetSpeed()
         {
-            return GetAdditiveBonusSum() * GetMultiplierSum();
+            return GetAdditiveBonusSum() * (1 + GetMultiplierSum());
         }
 
         #endregion

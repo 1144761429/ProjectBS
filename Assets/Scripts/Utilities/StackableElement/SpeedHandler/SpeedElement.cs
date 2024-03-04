@@ -140,7 +140,7 @@ namespace Utilities.StackableElement.SpeedHandler
         {
             Stack = DefaultStack;
         }
-        
+
         #endregion
     }
 }

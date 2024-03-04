@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using Utilities;
 using Object = UnityEngine.Object;
 
+// TODO: new input system is incompatible with EventSystem.current, fix it.
 namespace GridSystem
 {
     // TODO: add comment
@@ -109,19 +110,19 @@ namespace GridSystem
             If the place is invalid for placement, change the invalid GridUnits to "red?
             */
             
-            if (Input.GetMouseButtonDown(0)
-                && !EventSystem.current.IsPointerOverGameObject()
-                && MouseUtility.MouseIsOverLayer("Grid Map")
-                && _gridObjectToPlace != null)
-            {
-                MouseToGridCoordinate(out Vector2Int gridCoordinate);
-
-                if (_gridUnitArr[gridCoordinate.x, gridCoordinate.y].PlaceGridObject(_gridObjectToPlace))
-                {
-                    Debug.Log("Placed");
-                   // RefreshVisualObjectToBuildSelected(_gridObjectToPlace);
-                }
-            }
+            // if (Input.GetMouseButtonDown(0)
+            //     && !EventSystem.current.IsPointerOverGameObject()
+            //     && MouseUtility.MouseIsOverLayer("Grid Map")
+            //     && _gridObjectToPlace != null)
+            // {
+            //     MouseToGridCoordinate(out Vector2Int gridCoordinate);
+            //
+            //     if (_gridUnitArr[gridCoordinate.x, gridCoordinate.y].PlaceGridObject(_gridObjectToPlace))
+            //     {
+            //         Debug.Log("Placed");
+            //        // RefreshVisualObjectToBuildSelected(_gridObjectToPlace);
+            //     }
+            // }
         }
 
         #endregion
