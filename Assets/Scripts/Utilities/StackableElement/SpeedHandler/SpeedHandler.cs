@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Utilities.StackableElement.Core;
 
 namespace Utilities.StackableElement.SpeedHandler
@@ -51,7 +52,7 @@ namespace Utilities.StackableElement.SpeedHandler
         /// <returns></returns>
         public float GetSpeed()
         {
-            return GetAdditiveBonusSum() * GetMultiplierSum();
+            return GetAdditiveBonusSum() * (1 + GetMultiplierSum());
         }
 
         #endregion
@@ -71,9 +72,9 @@ namespace Utilities.StackableElement.SpeedHandler
         {
             float sum = 0;
 
-            foreach (SpeedElement speedElement in AdditiveBonus)
+            foreach (KeyValuePair<TID, SpeedElement> speedElement in AdditiveBonus)
             {
-                sum += speedElement.OverallValue;
+                sum += speedElement.Value.OverallValue;
             }
 
             return sum;
@@ -92,9 +93,9 @@ namespace Utilities.StackableElement.SpeedHandler
         {
             float sum = 0;
 
-            foreach (SpeedElement speedElement in Multiplier)
+            foreach (KeyValuePair<TID, SpeedElement> speedElement in Multiplier)
             {
-                sum += speedElement.OverallValue;
+                sum += speedElement.Value.OverallValue;
             }
 
             return sum;

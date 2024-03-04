@@ -2,7 +2,13 @@
 {
     /// <summary>
     /// An interface that represents a thing that can have stacks.
+    /// Overflow is not restricted by this interface itself. It has to be implemented outside of this.
     /// </summary>
+    ///
+    /// <remarks>
+    /// The <see cref="Stack"/> can go above or below the <see cref="MaxStack"/> and <see cref="MinStack"/>.
+    /// If doing so, the overflow amount will be provided through the API.
+    /// </remarks>
     /// 
     /// <example>
     /// <list type="number">

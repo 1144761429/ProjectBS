@@ -63,26 +63,26 @@ namespace Utilities
         /// True if the first game object that is hit by the ray is the desired tag.
         /// Otherwise, return false. 
         /// </returns>
-        public static bool MouseIsOverUIWithTag(string tag)
-        {
-            PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
-            pointerEventData.position = Input.mousePosition;
-
-            List<RaycastResult> raycastResultList = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerEventData, raycastResultList);
-
-            //return raycastResultList[0].gameObject.CompareTag(tag);
-        
-            for (int i = 0; i<raycastResultList.Count; i++)
-            {
-                if (!raycastResultList[i].gameObject.CompareTag(tag))
-                {
-                    raycastResultList.RemoveAt(i);
-                    i--;
-                }
-            }
-        
-            return raycastResultList.Count > 0;
-        }
+        // public static bool MouseIsOverUIWithTag(string tag)
+        // {
+        //     PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
+        //     pointerEventData.position = Input.mousePosition;
+        //
+        //     List<RaycastResult> raycastResultList = new List<RaycastResult>();
+        //     EventSystem.current.RaycastAll(pointerEventData, raycastResultList);
+        //
+        //     //return raycastResultList[0].gameObject.CompareTag(tag);
+        //
+        //     for (int i = 0; i<raycastResultList.Count; i++)
+        //     {
+        //         if (!raycastResultList[i].gameObject.CompareTag(tag))
+        //         {
+        //             raycastResultList.RemoveAt(i);
+        //             i--;
+        //         }
+        //     }
+        //
+        //     return raycastResultList.Count > 0;
+        // }
     }
 }
