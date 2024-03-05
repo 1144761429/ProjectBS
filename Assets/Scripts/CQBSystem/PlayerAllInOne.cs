@@ -55,6 +55,7 @@ public class PlayerAllInOne : MonoBehaviour
     }
     private void OnGetBullet(GameObject bullet)
     {
+        bullet.GetComponent<MeshRenderer>().enabled = true;
     }
     private void OnReleaseBullet(GameObject bullet)
     {
@@ -76,11 +77,6 @@ public class PlayerAllInOne : MonoBehaviour
     {
         if (Input.GetButton("Ctrl"))
         {
-            isAiming = true;
-            animator.SetBool("Aiming", true);
-            moveVelocity = Vector3.zero;
-            animator.SetBool("Moving", false);
-
             // get iso-mousing target
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -91,17 +87,29 @@ public class PlayerAllInOne : MonoBehaviour
                 {
                     targetPoint = hit.point;
 
+                    moveVelocity = Vector3.zero;
                     Vector3 direction = targetPoint - player.position;
                     direction.y = 0;
                     player.forward = direction;
                     rb.transform.forward = direction;
                 }
-                else Debug.Log("that's me");
-            }
-            if (Input.GetButton("Fire1"))
-            {
-                if (recentShot < 0)
-                    FireBullet();
+                if (!frontCollider.GetComponent<FrontCollider>().collide)
+                {
+                    isAiming = true;
+                    animator.SetBool("Aiming", true);
+                    animator.SetBool("Moving", false);
+
+                    if (Input.GetButton("Fire1"))
+                    {
+                        if (recentShot < 0)
+                            FireBullet();
+                    }
+                }
+                else
+                {
+                    isAiming = false;
+                    animator.SetBool("Aiming", false);
+                }
             }
         }
         else
@@ -205,7 +213,7 @@ public class PlayerAllInOne : MonoBehaviour
     // destroy after 1s
     private IEnumerator DestroyBullet(GameObject bullet)
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         BulletPool.Release(bullet);
     }
     private IEnumerator DisableLight(GameObject light)

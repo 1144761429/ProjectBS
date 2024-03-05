@@ -51,15 +51,12 @@ public class AimLine : MonoBehaviour
                 }
                 else // hit non-enemy obstacle
                 {
-                    if (lastHighlighted != null)
-                    {
-                        lastHighlighted.GetComponent<EnemyAllInOne>().RemoveHighlight();
-                        lastHighlighted = null;
-                    }
+                    RemoveHighLight();
                 }
             }
             else
             {
+                RemoveHighLight();
                 endPosition = player.position + player.forward.normalized * maxRange;
             }
 
@@ -71,11 +68,16 @@ public class AimLine : MonoBehaviour
         else
         {
             lineRenderer.enabled = false;
-            if (lastHighlighted != null)
-            {
-                lastHighlighted.GetComponent<EnemyAllInOne>().RemoveHighlight();
-                lastHighlighted = null;
-            }
+            RemoveHighLight();
+        }
+    }
+
+    private void RemoveHighLight()
+    {
+        if (lastHighlighted != null)
+        {
+            lastHighlighted.GetComponent<EnemyAllInOne>().RemoveHighlight();
+            lastHighlighted = null;
         }
     }
 }
