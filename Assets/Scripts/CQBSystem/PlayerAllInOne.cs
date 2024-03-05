@@ -6,8 +6,8 @@ public class PlayerAllInOne : MonoBehaviour
 {
     public float walkSpeed = 1f;
     public float runSpeed = 10f;
-    public GameObject model; 
-    public GameObject playerCollider; 
+    public GameObject model;
+    public GameObject playerCollider;
     public GameObject frontCollider;
     private float moveSpeed = 0f;
 
@@ -17,12 +17,13 @@ public class PlayerAllInOne : MonoBehaviour
 
     private Vector3 moveInput;
     private Vector3 moveVelocity;
-    
+
     public GameObject lightPrefab;
     public GameObject bulletPrefab;
     private new GameObject light;
     private ObjectPool<GameObject> BulletPool;
 
+    public bool isAiming;
     public Transform player;
     public float bulletSpeed = 100f;
     public float gunRadius = 1f;
@@ -75,6 +76,7 @@ public class PlayerAllInOne : MonoBehaviour
     {
         if (Input.GetButton("Ctrl"))
         {
+            isAiming = true;
             animator.SetBool("Aiming", true);
             moveVelocity = Vector3.zero;
             animator.SetBool("Moving", false);
@@ -85,12 +87,16 @@ public class PlayerAllInOne : MonoBehaviour
             Vector3 targetPoint;
             if (Physics.Raycast(ray, out hit, 100, raycastLayers))
             {
-                targetPoint = hit.point;
+                if (!(hit.collider.gameObject.layer == 12)) // if cast on player, no turning happens
+                {
+                    targetPoint = hit.point;
 
-                Vector3 direction = targetPoint - player.position;
-                direction.y = 0;
-                player.forward = direction;
-                rb.transform.forward = direction;
+                    Vector3 direction = targetPoint - player.position;
+                    direction.y = 0;
+                    player.forward = direction;
+                    rb.transform.forward = direction;
+                }
+                else Debug.Log("that's me");
             }
             if (Input.GetButton("Fire1"))
             {
@@ -100,6 +106,7 @@ public class PlayerAllInOne : MonoBehaviour
         }
         else
         {
+            isAiming = false;
             animator.SetBool("Aiming", false);
             // Get input from the horizontal and vertical axis (WASD or arrow keys by default)
             float horiInput = Input.GetAxis("Horizontal");
@@ -143,7 +150,7 @@ public class PlayerAllInOne : MonoBehaviour
             //recentShot = Mathf.Max(-0.05f, recentShot);
             if (recentShot < 0.75f) { animator.SetBool("Firing", false); }
         }
-        
+
 
         // Apply the movement to the Rigidbody
         rb.AddForce(moveVelocity * Time.fixedDeltaTime, ForceMode.VelocityChange);
@@ -156,7 +163,7 @@ public class PlayerAllInOne : MonoBehaviour
         animator.SetBool("Firing", true);
         recentShot = shotPeriod;
 
-        //TODO: ShotGun type check
+        //TODO: should be a ShotGun type behaviour
         for (int i = 0; i < 10; i++)
         {
 

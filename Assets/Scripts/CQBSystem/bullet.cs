@@ -18,6 +18,11 @@ public class bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        GameObject hitObject = collision.collider.gameObject;
+        if (hitObject.layer == 7) // is enemy
+        { 
+            hitObject.GetComponent<EnemyAllInOne>().Damage(1);
+        }
         // 禁用Rigidbody组件，防止进一步的物理运动
         var rb = GetComponent<Rigidbody>();
         if (rb != null)

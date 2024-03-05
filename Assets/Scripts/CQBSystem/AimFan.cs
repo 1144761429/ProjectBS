@@ -8,7 +8,7 @@ public class AimFanScripts : MonoBehaviour
     public Transform player;
     public float fanAngle = 120f;
     public float maxRange = 100f;
-    [SerializeField] private int rayCount = 240;
+    [SerializeField] private int rayCount = 240; // a total of this amount of ray will be casted from player
     public LayerMask Obstacles;
     public float wallHight = 1f;
     private float rayPerDegree;
@@ -17,7 +17,6 @@ public class AimFanScripts : MonoBehaviour
     public GameObject AimLinePrefab;
     private GameObject AimFan;
     private GameObject SpreadFan;
-    private GameObject AimLine;
 
     public PlayerAllInOne playerAllInOne; // used to get the spread
 
@@ -26,7 +25,6 @@ public class AimFanScripts : MonoBehaviour
         // create three aim indicators
         AimFan = Instantiate(AimFanPrefab);
         SpreadFan = Instantiate(SpreadFanPrefab);
-        AimLine = Instantiate(AimLinePrefab);
 
         
         rayPerDegree = rayCount / fanAngle;
