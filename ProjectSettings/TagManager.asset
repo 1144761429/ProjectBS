@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Raycast Ignorable UI
   - Ground
+  - Obstacles
   layers:
   - Default
   - TransparentFX
