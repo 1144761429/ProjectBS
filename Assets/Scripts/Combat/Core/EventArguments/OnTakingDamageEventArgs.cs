@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Combat.Core
+namespace Combat.Core.EventArguments
 {
     /// <summary>
     /// An <see cref="EventArgs"/> that is used when a <see cref="IDamageable"/> object receives damage, including

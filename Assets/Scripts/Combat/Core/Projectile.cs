@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Combat.Core.EventArguments;
 using UnityEngine;
 
 namespace Combat.Core
@@ -7,7 +8,7 @@ namespace Combat.Core
     /// <summary>
     /// A class that represents a projectile can be launched by <see cref="IProjectileLauncher"/> object.
     /// </summary>
-    public class Projectile : MonoBehaviour, IDamagingEntity
+    public abstract class Projectile : MonoBehaviour, IDamagingEntity
     {
         #region Events
 
