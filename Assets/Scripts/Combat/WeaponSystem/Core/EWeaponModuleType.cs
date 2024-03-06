@@ -1,4 +1,4 @@
-﻿namespace Combat.WeaponSystem
+﻿namespace Combat.WeaponSystem.Core
 {
     /// <summary>
     /// An enum for all possible <see cref="WeaponModule"/>s.
@@ -12,5 +12,8 @@
         
         // Base Module for melee weapon.
         MeleeAttackModule = 3,
+        
+        // Other modules
+        ChargeModule = 4
     }
 }

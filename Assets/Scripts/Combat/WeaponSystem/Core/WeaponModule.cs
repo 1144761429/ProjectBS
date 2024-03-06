@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Combat.WeaponSystem
+namespace Combat.WeaponSystem.Core
 {
     /// <summary>
     /// <para>
@@ -22,7 +22,7 @@ namespace Combat.WeaponSystem
         /// <summary>
         /// The <see cref="Weapon"/> that this <see cref="WeaponModule"/> is attached on.
         /// </summary>
-        public abstract Weapon SourceWeapon { get; }
+        public abstract Weapon SourceWeapon { get; protected set; }
         
         
     }

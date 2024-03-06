@@ -1,4 +1,4 @@
-﻿namespace Combat.WeaponSystem
+﻿namespace Combat.WeaponSystem.Core
 {
     public class ModuleDependencyHandler
     {
