@@ -1,6 +1,4 @@
-﻿using Combat.WeaponSystem.Core;
-
-namespace Combat.WeaponSystem.Modules
+﻿namespace Combat.WeaponSystem.Core.Modules
 {
     /// <summary>
     /// A <see cref="WeaponModule"/> that handles functionality of shooting.
@@ -9,8 +7,10 @@ namespace Combat.WeaponSystem.Modules
     {
         /// <inheritdoc/>
         public override EWeaponModuleType ModuleType => EWeaponModuleType.ShootModule;
-
+        
         /// <inheritdoc/>
-        public override Weapon SourceWeapon { get; protected set; }
+        public ShootModule(Weapon sourceWeapon) : base(sourceWeapon)
+        {
+        }
     }
 }

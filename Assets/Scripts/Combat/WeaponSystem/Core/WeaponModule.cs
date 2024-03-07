@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Combat.WeaponSystem.Core
 {
@@ -22,8 +23,21 @@ namespace Combat.WeaponSystem.Core
         /// <summary>
         /// The <see cref="Weapon"/> that this <see cref="WeaponModule"/> is attached on.
         /// </summary>
-        public abstract Weapon SourceWeapon { get; protected set; }
-        
-        
+        public Weapon SourceWeapon { get; private set; }
+
+        /// <summary>
+        /// The <see cref="MonoBehaviour"/> object that will be used for <see cref="MonoBehaviour"/> functions.
+        /// </summary>
+        protected MonoBehaviour Mono => SourceWeapon;
+
+        /// <summary>
+        /// Create a <see cref="WeaponModule"/> that is attached to <see cref="SourceWeapon"/>.
+        /// </summary>
+        /// 
+        /// <param name="sourceWeapon">The <see cref="Weapon"/> that this <see cref="WeaponModule"/> is attached on.</param>
+        protected WeaponModule(Weapon sourceWeapon)
+        {
+            SourceWeapon = sourceWeapon;
+        }
     }
 }

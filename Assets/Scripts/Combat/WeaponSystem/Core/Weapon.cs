@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
-using Combat.WeaponSystem.Core;
+using Combat.Core;
 using UnityEngine;
 
-namespace Combat.WeaponSystem
+namespace Combat.WeaponSystem.Core
 {
     /// <summary>
     /// <para>
@@ -41,10 +40,9 @@ namespace Combat.WeaponSystem
         /// </summary>
         protected readonly Dictionary<EWeaponModuleType, WeaponModule> Modules =
             new Dictionary<EWeaponModuleType, WeaponModule>();
-
+        
         #endregion
         
-
         /// <summary>
         /// <para>
         /// Initialize the <see cref="WeaponModule"/>s for this <see cref="Weapon"/> according to the specific type

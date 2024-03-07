@@ -107,15 +107,25 @@ namespace Combat.Core
             Source = source;
             Rb = GetComponent<Rigidbody>();
             Collider = GetComponent<Collider>();
-
+            Traversing = traverseAfterInit;
+            
             _initialized = true;
-
-            if (traverseAfterInit)
-            {
-                Traversing = true;
-            }
         }
 
+        /// <summary>
+        /// Reset this <see cref="Projectile"/> by setting <see cref="Traversing"/> to false and set
+        /// <see cref="TraveledDistance"/> to 0.
+        /// </summary>
+        ///
+        /// <exception cref="Exception">If this <see cref="Projectile"/> is not initialized.</exception>
+        public void Reset()
+        {
+            CheckInitialized();
+            
+            Traversing = false;
+            TraveledDistance = 0;
+        }
+        
         #endregion
 
         #region Private Functions
@@ -146,21 +156,7 @@ namespace Combat.Core
                 Destroy(gameObject);
             }
         }
-
-        /// <summary>
-        /// Reset this <see cref="Projectile"/> by setting <see cref="Traversing"/> to false and set
-        /// <see cref="TraveledDistance"/> to 0.
-        /// </summary>
-        ///
-        /// <exception cref="Exception">If this <see cref="Projectile"/> is not initialized.</exception>
-        private void Reset()
-        {
-            CheckInitialized();
-            
-            Traversing = false;
-            TraveledDistance = 0;
-        }
-
+        
         #endregion
         
         #region IDamagingEntity

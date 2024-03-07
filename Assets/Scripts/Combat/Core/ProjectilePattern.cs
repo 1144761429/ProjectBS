@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Combat.Core
@@ -27,7 +26,7 @@ namespace Combat.Core
         /// <summary>
         /// The <see cref="ProjectilePatternRound"/>s of this <see cref="ProjectilePattern"/>.
         /// </summary>
-        public List<ProjectilePatternRound> Rounds;
+        public List<ProjectilePatternRound> Rounds { get; private set; }
 
         /// <summary>
         /// The amount of <see cref="ProjectilePatternRound"/> in this <see cref="ProjectilePattern"/>.
@@ -189,25 +188,6 @@ namespace Combat.Core
 
             Rounds[roundIndex].Projectiles[projectileIndex].DirectionOffset = offset;
         }
-        
-        /// <summary>
-        /// Set the <see cref="projectileIndex"/>th <see cref="SingleProjectilePattern.Projectile"/> in round
-        /// <paramref name="roundIndex"/> to <paramref name="projectile"/>.
-        /// </summary>
-        /// 
-        /// <param name="roundIndex">The round number that the <see cref="Projectile"/> is in.</param>
-        /// <param name="projectileIndex">The index of the <see cref="Projectile"/> in that round.</param>
-        /// <param name="projectile">The new projectile.</param>
-        /// 
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// If round <paramref name="roundIndex"/> projectile <paramref name="projectileIndex"/>> does not exist.
-        /// </exception>
-        public void SetProjectile(int roundIndex, int projectileIndex, [NotNull]Projectile projectile)
-        {
-            IsValidIndex(roundIndex, projectileIndex);
-
-            Rounds[roundIndex].Projectiles[projectileIndex].Projectile = projectile;
-        }
 
         #endregion
         
@@ -312,11 +292,6 @@ namespace Combat.Core
         /// In other words, the random spread.
         /// </summary>
         public Vector2 DirectionOffset;
-        
-        /// <summary>
-        /// The type of <see cref="Projectile"/> to shot.
-        /// </summary>
-        public Projectile Projectile;
 
         /// <summary>
         /// The speed of the <see cref="Projectile"/>.
