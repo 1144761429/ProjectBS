@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace DefaultNamespace.Extensions
+namespace Extensions
 {
     /// <summary>
     /// A static class that stores the extension functions for <see cref="Unity.VisualScripting.Func{T1,T2,T3,T4,T5,TResult}"/>;
@@ -18,11 +17,11 @@ namespace DefaultNamespace.Extensions
         /// <c>true</c> if all the functions in <paramref name="funcs"/> are true.
         /// Otherwise, <c>false</c>.
         /// </returns>
-        public static bool AllTrue(this IEnumerable<Func<bool>> funcs)
+        public static bool AllTrue(this Func<bool> funcs)
         {
-            foreach (var func in funcs)
+            foreach (var func in funcs.GetInvocationList())
             {
-                if (!func())
+                if (!(bool)func.DynamicInvoke())
                 {
                     return false;
                 }

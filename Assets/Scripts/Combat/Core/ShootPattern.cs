@@ -20,24 +20,42 @@ namespace Combat.Core
     ///     <item>The speed of each <see cref="Projectile"/>.</item>
     /// </list>
     /// </summary>
-    [CreateAssetMenu(fileName = "NewProjectilePattern", menuName = "Combat/Projectile Pattern")]
-    public class ProjectilePattern : ScriptableObject
+    [CreateAssetMenu(fileName = "NewShootPattern", menuName = "Combat/Shoot Pattern")]
+    public class ShootPattern : ScriptableObject
     {
         /// <summary>
-        /// The <see cref="ProjectilePatternRound"/>s of this <see cref="ProjectilePattern"/>.
+        /// The <see cref="ShootPatternRound"/>s of this <see cref="ShootPattern"/>.
         /// </summary>
-        public List<ProjectilePatternRound> Rounds { get; private set; }
+        public List<ShootPatternRound> Rounds { get; private set; }
 
         /// <summary>
-        /// The amount of <see cref="ProjectilePatternRound"/> in this <see cref="ProjectilePattern"/>.
+        /// The amount of <see cref="ShootPatternRound"/> in this <see cref="ShootPattern"/>.
         /// </summary>
-        public int RoundAmount => Rounds.Count;
+        public int RoundCount => Rounds.Count;
 
-        #region Set ProjectilePatternRound
+        /// <summary>
+        /// The total amount of <see cref="Projectile"/> that will be shot if execute this <see cref="ShootPattern"/>.
+        /// </summary>
+        public int ProjectileCount
+        {
+            get
+            {
+                int sum = 0;
+                
+                foreach (ShootPatternRound round in Rounds)
+                {
+                    sum += round.ProjectileCount;
+                }
+
+                return sum;
+            }
+        }
+        
+        #region Set ShootPatternRound
 
         /// <summary>
         /// <para>
-        /// Set the <see cref="ProjectilePatternRound.IntervalBeforeNext"/> in round
+        /// Set the <see cref="ShootPatternRound.IntervalBeforeNext"/> in round
         /// <paramref name="roundIndex"/> to <paramref name="interval"/>.
         /// </para>
         /// 
@@ -62,7 +80,7 @@ namespace Combat.Core
             if (interval < 0)
             {
                 throw new ArgumentException($"{nameof(interval)} cannot be set to negative. " +
-                                            $"{nameof(ProjectilePattern)}, {nameof(roundIndex)}: {roundIndex}, " +
+                                            $"{nameof(ShootPattern)}, {nameof(roundIndex)}: {roundIndex}, " +
                                             $"{nameof(interval)}: {interval}.");
             }
             
@@ -71,7 +89,7 @@ namespace Combat.Core
 
         /// <summary>
         /// <para>
-        /// Set the <see cref="ProjectilePatternRound.GeneralDirection"/> in round
+        /// Set the <see cref="ShootPatternRound.GeneralDirection"/> in round
         /// <paramref name="roundIndex"/> to <paramref name="direction"/>.
         /// </para>
         /// </summary>
@@ -91,7 +109,7 @@ namespace Combat.Core
         
         /// <summary>
         /// <para>
-        /// Set the <see cref="ProjectilePatternRound.DirectionOffset"/> in round
+        /// Set the <see cref="ShootPatternRound.DirectionOffset"/> in round
         /// <paramref name="roundIndex"/> to <paramref name="offset"/>.
         /// </para>
         /// </summary>
@@ -192,16 +210,16 @@ namespace Combat.Core
         #endregion
         
         /// <summary>
-        /// Get the the number of how many <see cref="Projectile"/> each <see cref="ProjectilePatternRound"/> has.
+        /// Get the the number of how many <see cref="Projectile"/> each <see cref="ShootPatternRound"/> has.
         /// </summary>
         /// 
         /// <returns>An array that contains the number of <see cref="Projectile"/>s each
-        /// <see cref="ProjectilePatternRound"/> has.</returns>
-        public int[] GetProjectileAmountInEachRound()
+        /// <see cref="ShootPatternRound"/> has.</returns>
+        private int[] GetProjectileAmountInEachRound()
         {
-            int[] result = new int[RoundAmount];
+            int[] result = new int[RoundCount];
 
-            for (int i = 0; i < RoundAmount; i++)
+            for (int i = 0; i < RoundCount; i++)
             {
                 result[i] = Rounds[i].Projectiles.Count;
             }
@@ -210,8 +228,8 @@ namespace Combat.Core
         }
         
         /// <summary>
-        /// Check if an round index <paramref name="roundIndex"/> is within the range of 0-<see cref="RoundAmount"/>,
-        /// inclusive. The index starts at 0 and ends at <see cref="RoundAmount"/> - 1. If the index in invalid, an
+        /// Check if an round index <paramref name="roundIndex"/> is within the range of 0-<see cref="RoundCount"/>,
+        /// inclusive. The index starts at 0 and ends at <see cref="RoundCount"/> - 1. If the index in invalid, an
         /// <see cref="ArgumentOutOfRangeException"/> will be thrown.
         /// </summary>
         ///
@@ -230,8 +248,8 @@ namespace Combat.Core
         {
             if (roundIndex >= Rounds.Count || roundIndex < 0)
             {
-                string message = $"{typeof(ProjectilePattern)} {nameof(ProjectilePattern)} " +
-                                 $"have {RoundAmount} rounds with projectile numbers " +
+                string message = $"{typeof(ShootPattern)} {nameof(ShootPattern)} " +
+                                 $"have {RoundCount} rounds with projectile numbers " +
                                  $"{GetProjectileAmountInEachRound()}, but you are trying to access round: {roundIndex} " +
                                  $"{typeof(Projectile)}: {projectileIndex}.";
                 
@@ -241,19 +259,19 @@ namespace Combat.Core
     }
 
     /// <summary>
-    /// A class that represents a round of <see cref="ProjectilePattern"/>.
-    /// See <see cref="ProjectilePattern"/> for more details about round.
+    /// A class that represents a round of <see cref="ShootPattern"/>.
+    /// See <see cref="ShootPattern"/> for more details about round.
     /// </summary>
     [Serializable]
-    public class ProjectilePatternRound
+    public class ShootPatternRound
     {
         /// <summary>
-        /// The time that will be waited before the next <see cref="ProjectilePatternRound"/> is shot.
+        /// The time that will be waited before the next <see cref="ShootPatternRound"/> is shot.
         /// </summary>
         public float IntervalBeforeNext;
 
         /// <summary>
-        /// The direction of where this <see cref="ProjectilePatternRound"/> is shot based on
+        /// The direction of where this <see cref="ShootPatternRound"/> is shot based on
         /// <see cref="IProjectileLauncher"/>'s direction.
         /// </summary>
         public Vector3 GeneralDirection;
@@ -265,13 +283,18 @@ namespace Combat.Core
         public Vector2 DirectionOffset;
         
         /// <summary>
-        /// The <see cref="SingleProjectilePattern"/>s in this <see cref="ProjectilePatternRound"/>.
+        /// The <see cref="SingleProjectilePattern"/>s in this <see cref="ShootPatternRound"/>.
         /// </summary>
         public List<SingleProjectilePattern> Projectiles;
+
+        /// <summary>
+        /// The amount of <see cref="Projectiles"/> in a round.
+        /// </summary>
+        public int ProjectileCount => Projectiles.Count;
     }
 
     /// <summary>
-    /// A class that represents the behaviour of a single <see cref="Projectile"/> in a <see cref="ProjectilePatternRound"/>.
+    /// A class that represents the behaviour of a single <see cref="Projectile"/> in a <see cref="ShootPatternRound"/>.
     /// </summary>
     [Serializable]
     public class SingleProjectilePattern
@@ -283,7 +306,7 @@ namespace Combat.Core
         
         /// <summary>
         /// The direction of where this <see cref="Projectile"/> is shot based on
-        /// <see cref="ProjectilePatternRound.GeneralDirection"/> of <see cref="ProjectilePatternRound"/>.
+        /// <see cref="ShootPatternRound.GeneralDirection"/> of <see cref="ShootPatternRound"/>.
         /// </summary>
         public Vector3 GeneralDirection;
 

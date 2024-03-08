@@ -35,6 +35,8 @@ namespace Combat.WeaponSystem.Core
         [field: SerializeField]
         public int DatabaseID { get; private set; }
 
+        public GameObject Wielder { get; private set; }
+        
         /// <summary>
         /// Maps a <see cref="EWeaponModuleType"/> to a <see cref="WeaponModule"/>.
         /// </summary>

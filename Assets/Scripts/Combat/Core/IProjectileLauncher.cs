@@ -29,12 +29,12 @@ namespace Combat.Core
         public EventHandler<LaunchProjectileEventArgs> AfterLaunch { get; }
         
         /// <summary>
-        /// The <see cref="ProjectilePattern"/> that this <see cref="IProjectileLauncher"/> follows.
+        /// The <see cref="ShootPattern"/> that this <see cref="IProjectileLauncher"/> follows.
         /// </summary>
-        public ProjectilePattern ProjectilePattern { get; }
+        public ShootPattern ShootPattern { get; }
         
         /// <summary>
-        /// Launch this <see cref="IProjectileLauncher"/> according to <see cref="ProjectilePattern"/>.
+        /// Launch this <see cref="IProjectileLauncher"/> according to <see cref="ShootPattern"/>.
         /// </summary>
         public void Launch();
     }
